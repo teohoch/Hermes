@@ -1,0 +1,70 @@
++---------------------------+
+| Tables_in_aiv_ste_version |
++---------------------------+
+| ant_event                 |
+| antenna                   |
+| category                  |
+| data                      |
+| event                     |
+| location                  |
+| status                    |
+| user                      |
++---------------------------+
+
+category
+Name           	Type           	NULL           	Primary        	Default
+id             	int(11)        	NO             	PRI            	0
+name           	varchar(50)    	YES            	               	None
+
+
+data
+Name           	Type           	NULL           	Primary        	Default
+ste            	varchar(25)    	NO             	PRI
+host           	varchar(25)    	NO             	PRI
+acs            	varchar(200)   	YES            	               	None
+acssw          	varchar(200)   	YES            	               	None
+tag            	varchar(100)   	NO             	PRI
+date           	datetime       	YES            	               	None
+bz2            	tinyint(1)     	NO             	               	0
+
+
+event
+Name           	Type           	NULL           	Primary        	Default
+id             	int(11)        	NO             	PRI            	0
+ste            	varchar(20)    	YES            	               	None
+tstamp         	timestamp      	YES            	               	CURRENT_TIMESTAMP
+reason         	text           	YES            	               	None
+duration_min   	int(11)        	YES            	               	None
+category       	int(11)        	YES            	               	None
+operator       	varchar(8)     	YES            	               	None
+user           	varchar(8)     	YES            	               	None
+event          	varchar(200)   	NO             	               	unknown
+time           	varchar(100)   	NO             	               	unknown
+
+
+location
+Name           	Type           	NULL           	Primary        	Default
+ste            	varchar(255)   	NO             	PRI
+room           	varchar(255)   	YES            	               	None
+building       	varchar(255)   	YES            	               	None
+site           	varchar(255)   	YES            	               	None
+region         	varchar(255)   	YES            	               	None
+country        	varchar(255)   	YES            	               	None
+owner          	varchar(255)   	YES            	               	None
+administrator  	varchar(255)   	YES            	               	None
+comment        	varchar(255)   	YES            	               	None
+
+
+status
+Name           	Type           	NULL           	Primary        	Default
+id             	int(11)        	NO             	PRI            	None
+date           	datetime       	NO
+user           	varchar(8)     	NO
+ste            	varchar(255)   	NO
+version        	varchar(6000)  	YES            	               	None
+
+
+user
+Name           	Type           	NULL           	Primary        	Default
+login          	varchar(8)     	NO             	PRI
+tipo           	varchar(20)    	YES            	               	None
