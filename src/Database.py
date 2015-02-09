@@ -1,8 +1,8 @@
 __author__ = 'teohoch'
 
 import MySQLdb as mySql
-import datetime
 import time
+from datetime import datetime
 
 class Database():
 	"""
@@ -94,11 +94,79 @@ class Database():
 
 
 class VersionDatabase(Database):
-	def getVersion(self, ste, host, timestamp= (datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))):
-		sentence = "SELECT acs, acssw FROM data WHERE ste = '{0}' AND host = '{1}' AND date <= '{2}' ORDER BY date DESC LIMIT 1;".format(ste, host, timestamp)
-		r = self.executeReadSQL(sentence)[0]
-		return {'acs'   :   r[0],
-		        'acssw' :   r[1]}
+
+	def getBuild(self, ste, timestamp=(time.time())):
+		timestamp=datetime.fromtimestamp(float(timestamp))
+		sentence = "SELECT version  FROM status WHERE ste = '{0}' AND date <= '{1}' ORDER BY date DESC LIMIT 1;".format(ste, timestamp)
+		r = self.executeReadSQL(sentence)
+		if r:
+			r = r[0][0]
+			r = r.split('\n')[2].split(' : ')[1]
+			return r
+
+		return ''
+	def getAcsVersion(self, ste, timestamp=(time.time())):
+		timestamp=datetime.fromtimestamp(float(timestamp))
+		sentence = "SELECT version  FROM status WHERE ste = '{0}' AND date <= '{1}' ORDER BY date DESC LIMIT 1;".format(ste, timestamp)
+		r = self.executeReadSQL(sentence)
+		if r:
+			r = r[0][0]
+			r = r.split('\n')[1].split(' : ')[1]
+			return r
+		return ''
+
+	def getAntennas(self, ste, timestamp=(time.time())):
+		"""
+		Return a dictionary with the antennas configured and the number of antennas configured
+		:param ste: The STE in question
+		:param timestamp: The Timestamp to query, in Unix Timestamp
+		:return: A dictionary with 2 keys: number -> the number of antennas configured. and a dictionary.
+		In this inner dictionary, each configured antenna is a key, and the corresponding value is the configured slot
+		"""
+		timestamp=datetime.fromtimestamp(float(timestamp))
+		sentence = "SELECT version  FROM status WHERE ste = '{0}' AND date <= '{1}' ORDER BY date DESC LIMIT 1;".format(ste, timestamp)
+		r = self.executeReadSQL(sentence)
+
+		if r:
+			r = r[0][0]
+			r = r.split('=>')[2].split(':\n')[1].replace('\n', ' ').split(' | ')
+
+			r2 = {}
+
+			for entry in r:
+				if entry.strip():
+					k = entry.split(' -> ')
+					r2[k[0]] = k[1]
+
+			return dict(number=len(r2), antennas=r2)
+		return ''
+
+
+	def getPatches(self, ste, timestamp=(time.time())):
+		"""
+		Return a dictionary with the Patches applied and the number of patches applied
+		:param ste: The STE in question
+		:param timestamp: The Timestamp to query
+		:return: A dictionary with 2 keys: number -> the number of the number of patches applied. and a dictionary.
+		In this inner dictionary, each Patch name is a key, and the corresponding value is the associated comments
+		"""
+		timestamp=datetime.fromtimestamp(float(timestamp))
+		sentence = "SELECT version  FROM status WHERE ste = '{0}' AND date <= '{1}' ORDER BY date DESC LIMIT 1;".format(ste, timestamp)
+		r = self.executeReadSQL(sentence)
+
+		if r:
+			r = r[0][0]
+			r = r.split('=>')
+
+			r2 = {}
+
+			for entry in r:
+				if 'Patch' in entry:
+					k = entry.split('\n')
+					r2[k[0].split('Patch: ')[1]] = k[1].split('Responsible: ')[1]
+
+			return dict(number=len(r2), patches=r2)
+		return ''
 
 if __name__ == "__main__":
 	import json
@@ -110,8 +178,13 @@ if __name__ == "__main__":
 
 	db = VersionDatabase(host,dbname,user,password)
 
-	a = db.getVersion('aos','gns')
-	print a
-	print json.dumps(a)
+	#a = db.getBuild('aos',timestamp='2015-02-09 12:01:06')
+	b = db.getAcsVersion('aos')
+	#c = db.getAntennas('aos')
+	#d = db.getPatches('aos')
 
+	#print a
+	print(b)
+	#print c
+	#print d
 
