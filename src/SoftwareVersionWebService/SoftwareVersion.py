@@ -3,7 +3,7 @@ import time
 
 from flask import Flask, request,render_template
 
-from src.SoftwareVersionWebService.Database import VersionDatabase
+from Database import VersionDatabase
 
 
 app = Flask(__name__)
@@ -30,7 +30,7 @@ def __recoverinfo():
 
 @app.route('/')
 def root():
-	return render_template('index.html')
+	return render_template('index.html  ')
 
 @app.route('/acs/', methods=['POST'])
 def getAcsVersion():
