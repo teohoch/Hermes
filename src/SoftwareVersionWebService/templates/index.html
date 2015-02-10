@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>ALMA Software Version Web Service</title>
+</head>
+<body>
+    <h1>Welcome to the ALMA Software Version Web Service</h1>
+    <h3>This service works by receiving a POST request and returning a JSON response. The POST request and Json response are as follows: </h3>
+
+    <h2>Route '/version/'</h2>
+    <p>Returns the Release and Build tags on the inquired STE at the specified time, as well as all available environment information.</p>
+    <ul>
+        <h3>Method: POST</h3>
+
+        <li>Input Arguments</li>
+        <ul>
+            <li>ste (required)  = The STE on which you want to receive information.</li>
+		    <li>timestamp (optional) = The DateTime on which you want to receive information. Must be a UNIX Timestamp.
+		 	If not provided, the current Timestamp will be used.</li>
+		    <li>architecture (optional) = If the inquired STE is 'AOS', this parameter indicates if the desired information
+		 	comes from the 32 bit (x86) or the 64 bit (x86_64) version. The parameter is a either 32 for the 32 bit
+		 	version, or 64 for the 64 bit version.</li>
+        </ul>
+        <li>Output</li>
+        <ul>
+            Json dictionary with the following keys:
+		 	<li>release 	= Release version used at the indicated time, at the indicated STE</li>
+		 	<li>build 		= Build Tag at the indicated time, at the indicated STE</li>
+		    <li>environment	= All the environment information available at the indicated time, about the indicated STE</li>
+		 	<li>ste			= STE inquired</li>
+		 	<li>timestamp	= Timestamp inquired</li>
+        </ul>
+    </ul>
+
+    <h2>Route '/acs/'</h2>
+    <p>Returns the ACS Version used by the specified STE at the given time.</p>
+    <ul>
+        <h3>Method: POST</h3>
+        <li>Input Arguments</li>
+        <ul>
+            <li>ste (required)  = The STE on which you want to receive information.</li>
+		    <li>timestamp (optional) = The DateTime on which you want to receive information. Must be a UNIX Timestamp.
+		 	If not provided, the current Timestamp will be used.</li>
+		    <li>architecture (optional) = If the inquired STE is 'AOS', this parameter indicates if the desired information
+		 	comes from the 32 bit (x86) or the 64 bit (x86_64) version. The parameter is a either 32 for the 32 bit
+		 	version, or 64 for the 64 bit version.</li>
+        </ul>
+        <li>Output</li>
+        <ul>
+            Json dictionary with the following keys:
+		 	<li>acsversion 	= ACS Version used at the indicated time, at the indicated STE</li>
+		 	<li>ste			= STE inquired</li>
+		 	<li>timestamp	= Timestamp inquired</li>
+        </ul>
+    </ul>
+
+    <h2>Route '/build/'</h2>
+    <p>Returns  Build tag on the inquired STE at the specified time.</p>
+    <ul>
+        <h3>Method: POST</h3>
+        <li>Input Arguments</li>
+        <ul>
+            <li>ste (required)  = The STE on which you want to receive information.</li>
+		    <li>timestamp (optional) = The DateTime on which you want to receive information. Must be a UNIX Timestamp.
+		 	If not provided, the current Timestamp will be used.</li>
+		    <li>architecture (optional) = If the inquired STE is 'AOS', this parameter indicates if the desired information
+		 	comes from the 32 bit (x86) or the 64 bit (x86_64) version. The parameter is a either 32 for the 32 bit
+		 	version, or 64 for the 64 bit version.</li>
+        </ul>
+        <li>Output</li>
+        <ul>
+            Json dictionary with the following keys:
+		 	<li>build 	= Build Tag at the indicated time, at the indicated STE</li>
+		 	<li>ste			= STE inquired</li>
+		 	<li>timestamp	= Timestamp inquired</li>
+        </ul>
+    </ul>
+
+    <h2>Route '/release/'</h2>
+    <p>Returns the Release tag on the inquired STE at the specified time.</p>
+    <ul>
+        <h3>Method: POST</h3>
+        <li>Input Arguments</li>
+        <ul>
+            <li>ste (required)  = The STE on which you want to receive information.</li>
+		    <li>timestamp (optional) = The DateTime on which you want to receive information. Must be a UNIX Timestamp.
+		 	If not provided, the current Timestamp will be used.</li>
+		    <li>architecture (optional) = If the inquired STE is 'AOS', this parameter indicates if the desired information
+		 	comes from the 32 bit (x86) or the 64 bit (x86_64) version. The parameter is a either 32 for the 32 bit
+		 	version, or 64 for the 64 bit version.</li>
+        </ul>
+        <li>Output</li>
+        <ul>
+            Json dictionary with the following keys:
+		 	<li>release 	= Release version used at the indicated time, at the indicated STE</li>
+		 	<li>ste			= STE inquired</li>
+		 	<li>timestamp	= Timestamp inquired</li>
+        </ul>
+    </ul>
+
+    <h2>Route '/antennas/'</h2>
+    <p>Returns the configured Antennas on the inquired STE at the specified time, as well as all available environment information.</p>
+    <ul>
+        <h3>Method: POST</h3>
+        <li>Input Arguments</li>
+        <ul>
+            <li>ste (required)  = The STE on which you want to receive information.</li>
+		    <li>timestamp (optional) = The DateTime on which you want to receive information. Must be a UNIX Timestamp.
+		 	If not provided, the current Timestamp will be used.</li>
+		    <li>architecture (optional) = If the inquired STE is 'AOS', this parameter indicates if the desired information
+		 	comes from the 32 bit (x86) or the 64 bit (x86_64) version. The parameter is a either 32 for the 32 bit
+		 	version, or 64 for the 64 bit version.</li>
+        </ul>
+        <li>Output</li>
+        <ul>
+            Json dictionary with the following keys:
+		 	<li>antennas	= Dictionary the uses as key the configured Antennas, and as the corresponding value, the
+		 	corresponding configured slot</li>
+		    <li>number		= Number of configured antennas</li>
+		 	<li>ste			= STE inquired</li>
+		 	<li>timestamp	= Timestamp inquired</li>
+        </ul>
+    </ul>
+
+    <h2>Route '/patches/'</h2>
+    <p>Returns applied Patches on the inquired STE at the specified time, as well as all available environment information.</p>
+    <ul>
+        <h3>Method: POST</h3>
+        <li>Input Arguments</li>
+        <ul>
+            <li>ste (required)  = The STE on which you want to receive information.</li>
+		    <li>timestamp (optional) = The DateTime on which you want to receive information. Must be a UNIX Timestamp.
+		 	If not provided, the current Timestamp will be used.</li>
+		    <li>architecture (optional) = If the inquired STE is 'AOS', this parameter indicates if the desired information
+		 	comes from the 32 bit (x86) or the 64 bit (x86_64) version. The parameter is a either 32 for the 32 bit
+		 	version, or 64 for the 64 bit version.</li>
+        </ul>
+        <li>Output</li>
+        <ul>
+            Json dictionary with the following keys:
+		 	<li>patches		= Dictionary the uses as key the name of the patch, and as the corresponding value, the
+		 	corresponding comments</li>
+		    <li>number		= Number of installed patches</li>
+		 	<li>ste			= STE inquired</li>
+		 	<li>timestamp	= Timestamp inquired</li>
+        </ul>
+    </ul>
+
+
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+
+Route '/acs/'
+	POST
+		Input Argument
+		 *	ste (required)  = The STE on which you want to receive information.
+		 *	timestamp (optional) = The DateTime on which you want to receive information. Must be a UNIX Timestamp.
+		 	If not provided, the current Timestamp will be used.
+		 *	architecture (optional) = If the inquired STE is 'AOS', this parameter indicates if the desired information
+		 	comes from the 32 bit (x86) or the 64 bit (x86_64) version. The parameter is a either 32 for the 32 bit
+		 	version, or 64 for the 64 bit version.
+		 Output
+		 Json containing a dictionary with the following keys:
+		 *	acsversion 	= ACS Version used at the indicated time, at the indicated STE
+		 *	ste			= STE inquired
+		 *	timestamp	= Timestamp inquired
+
+Route '/build/'
+	POST
+		Input Argument
+		 *	ste (required)  = The STE on which you want to receive information.
+		 *	timestamp (optional) = The DateTime on which you want to receive information. Must be a UNIX Timestamp.
+		 	If not provided, the current Timestamp will be used.
+		 *	architecture (optional) = If the inquired STE is 'AOS', this parameter indicates if the desired information
+		 	comes from the 32 bit (x86) or the 64 bit (x86_64) version. The parameter is a either 32 for the 32 bit
+		 	version, or 64 for the 64 bit version.
+		 Output
+		 Json containing a dictionary with the following keys:
+		 *	build 	= Build Tag at the indicated time, at the indicated STE
+		 *	ste			= STE inquired
+		 *	timestamp	= Timestamp inquired
+
+Route '/release/'
+	POST
+		Input Argument
+		 *	ste (required)  = The STE on which you want to receive information.
+		 *	timestamp (optional) = The DateTime on which you want to receive information. Must be a UNIX Timestamp.
+		 	If not provided, the current Timestamp will be used.
+		 *	architecture (optional) = If the inquired STE is 'AOS', this parameter indicates if the desired information
+		 	comes from the 32 bit (x86) or the 64 bit (x86_64) version. The parameter is a either 32 for the 32 bit
+		 	version, or 64 for the 64 bit version.
+		 Output
+		 Json containing a dictionary with the following keys:
+		 *	release 	= Release version used at the indicated time, at the indicated STE
+		 *	ste			= STE inquired
+		 *	timestamp	= Timestamp inquired
+
+ Route '/antennas/'
+	POST
+		Input Argument
+		 *	ste (required)  = The STE on which you want to receive information.
+		 *	timestamp (optional) = The DateTime on which you want to receive information. Must be a UNIX Timestamp.
+		 	If not provided, the current Timestamp will be used.
+		 *	architecture (optional) = If the inquired STE is 'AOS', this parameter indicates if the desired information
+		 	comes from the 32 bit (x86) or the 64 bit (x86_64) version. The parameter is a either 32 for the 32 bit
+		 	version, or 64 for the 64 bit version.
+		 Output
+		 Json containing a dictionary with the following keys:
+		 *	antennas	= Dictionary the uses as key the configured Antennas, and as the corresponding value, the
+		 	corresponding configured slot
+		 *	number		= Number of configured antennas
+		 *	ste			= STE inquired
+		 *	timestamp	= Timestamp inquired
+
+Route '/patches/'
+	POST
+		Input Argument
+		 *	ste (required)  = The STE on which you want to receive information.
+		 *	timestamp (optional) = The DateTime on which you want to receive information. Must be a UNIX Timestamp.
+		 	If not provided, the current Timestamp will be used.
+		 *	architecture (optional) = If the inquired STE is 'AOS', this parameter indicates if the desired information
+		 	comes from the 32 bit (x86) or the 64 bit (x86_64) version. The parameter is a either 32 for the 32 bit
+		 	version, or 64 for the 64 bit version.
+		 Output
+		 Json containing a dictionary with the following keys:
+		 *	patches		= Dictionary the uses as key the name of the patch, and as the corresponding value, the
+		 	corresponding comments
+		 *	number		= Number of installed patches
+		 *	ste			= STE inquired
+		 *	timestamp	= Timestamp inquired
+
+Route '/version/'
+	POST
+		Input Argument
+		 *	ste (required)  = The STE on which you want to receive information.
+		 *	timestamp (optional) = The DateTime on which you want to receive information. Must be a UNIX Timestamp.
+		 	If not provided, the current Timestamp will be used.
+		 *	architecture (optional) = If the inquired STE is 'AOS', this parameter indicates if the desired information
+		 	comes from the 32 bit (x86) or the 64 bit (x86_64) version. The parameter is a either 32 for the 32 bit
+		 	version, or 64 for the 64 bit version.
+		 Output
+		 Json containing a dictionary with the following keys:
+		 *	release 	= Release version used at the indicated time, at the indicated STE
+		 *	build 		= Build Tag at the indicated time, at the indicated STE
+		 *	environment	= All the environment information available at the indicated time, about the indicated STE
+		 *	ste			= STE inquired
+		 *	timestamp	= Timestamp inquired
+
+
+
+
