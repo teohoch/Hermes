@@ -30,7 +30,7 @@ def __recoverinfo():
 
 @app.route('/')
 def root():
-	return render_template('index.html  ')
+	return render_template('index.html')
 
 @app.route('/acs/', methods=['POST'])
 def getAcsVersion():
