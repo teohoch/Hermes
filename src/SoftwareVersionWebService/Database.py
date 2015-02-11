@@ -113,7 +113,7 @@ class VersionDatabase(Database):
 		if r:
 			r = r[0][0]
 			r = r.split('\n')[1].split(' : ')[1]
-			return dict(acsversion=r, ste=ste,timestamp=datetime.fromtimestamp(float(timestamp)))
+			return dict(acsversion=r, ste=ste,timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
 		return {}
 
 	def getBuild(self, ste, timestamp=(time.time()), arch=None):
@@ -122,7 +122,7 @@ class VersionDatabase(Database):
 		if r:
 			r = r[0][0]
 			r = r.split('\n')[2].split(' : ')[1]
-			return dict(build=r, ste=ste,timestamp=datetime.fromtimestamp(float(timestamp)))
+			return dict(build=r, ste=ste,timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
 
 		return {}
 
@@ -136,7 +136,7 @@ class VersionDatabase(Database):
 			r = r.split('-B')
 			if len(r) == 2:
 				r = r[0]+'-B'
-			return dict(release=r, ste=ste,timestamp=datetime.fromtimestamp(float(timestamp)))
+			return dict(release=r, ste=ste,timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
 
 		return {}
 
@@ -162,7 +162,7 @@ class VersionDatabase(Database):
 					k = entry.split(' -> ')
 					r2[k[0]] = k[1]
 
-			return dict(number=len(r2), antennas=r2, ste=ste, timestamp=datetime.fromtimestamp(float(timestamp)))
+			return dict(number=len(r2), antennas=r2, ste=ste, timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
 		return {}
 
 
@@ -188,7 +188,7 @@ class VersionDatabase(Database):
 					k = entry.split('\n')
 					r2[k[0].split('Patch: ')[1]] = k[1].split('Responsible: ')[1]
 
-			return dict(number=len(r2), patches=r2, ste=ste, timestamp=datetime.fromtimestamp(float(timestamp)))
+			return dict(number=len(r2), patches=r2, ste=ste, timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
 		return ''
 
 	def getComplete(self, ste, timestamp=(time.time()), arch=None):
@@ -221,7 +221,7 @@ class VersionDatabase(Database):
 			environment = r
 
 			return dict(release=release, build=build, environment=environment, ste=ste,
-				timestamp=datetime.fromtimestamp(float(timestamp)))
+				timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
 		return {}
 
 

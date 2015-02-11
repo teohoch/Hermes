@@ -1,4 +1,3 @@
-
 Route '/acs/'
 	POST
 		Input Argument
@@ -94,7 +93,3 @@ Route '/version/'
 		 *	environment	= All the environment information available at the indicated time, about the indicated STE
 		 *	ste			= STE inquired
 		 *	timestamp	= Timestamp inquired
-
-
-
-

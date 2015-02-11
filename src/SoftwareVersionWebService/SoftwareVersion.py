@@ -7,7 +7,7 @@ from Database import VersionDatabase
 
 
 app = Flask(__name__)
-app.debug = True
+app.debug = False
 host = 'aivwiki.alma.cl'
 dbname = 'aiv_ste_version'
 user = 'queryuser'
