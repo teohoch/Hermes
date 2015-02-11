@@ -1,10 +1,11 @@
-mport sys
- import logging
- import os
+#!/usr/bin/python
+import sys
+import logging
+import os
 
- logging.basicConfig(stream=sys.stderr)
- sys.path.insert(0,"/var/www/html/Hermes/")
- activate_this = '/opt/virtual_env/Hermes/bin/activate_this.py'
- execfile(activate_this, dict(__file__=activate_this))
+logging.basicConfig(stream=sys.stderr)
+sys.path.insert(0,"/var/www/html/Hermes/")
+activate_this = '/opt/virtual_env/Hermes/bin/activate_this.py'
+execfile(activate_this, dict(__file__=activate_this))
 
- from src.SoftwareVersionWebService.SoftwareVersion import app as application
+from src.SoftwareVersionWebService.SoftwareVersion import app as application
