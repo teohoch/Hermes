@@ -5,36 +5,50 @@ import json
 
 import requests
 import dateutil.parser
+from RabbitConnection import RabbitConnection
+
 
 
 class ALMAEventSender():
-	def __init__(self):
-		# TODO Define self.host, self.user, self.password, self.channel
-		# self.sender = RabbitConnection(self.host, self.user, self.password, self.channel)
-		return
+	def __init__(self, rabbit_config):
+		self.host = rabbit_config['Host']
+		self.user = rabbit_config['User']
+		self.password = rabbit_config['Password']
+		self.routing_key = rabbit_config['Routing_key']
+		self.exchange = rabbit_config['Exchange']
+		self.sender = RabbitConnection(self.host, self.user, self.password, self.routing_key, self.exchange)
+
 
 
 	def __send(self, message):
-		self.sender.send()
+		self.sender.send(json.dumps(message))
 		return
 
 	def __getversion(self, ste, timestamp):
-		url = 'http://localhost:5000/version/'
+		url = 'http://sstudent01.osf.alma.cl:800/version/'
 		payload = {'ste': ste, 'time': timestamp}
 		r = requests.post(url=url, data=payload)
 		rj = r.json()
-		return rj['RELEASE']
+		return rj['release']
 
-	def sendEvent(self, inputJson):
-		decoded_json = json.loads(inputJson)
+	def __generate_message(self, input):
+		if isinstance(input,str):
+			decoded_input = json.loads(input)
+			if not isinstance(decoded_input, dict):
+				raise ValueError('Input is not a Valid Json Dictionary')
+		elif isinstance(input, dict):
+			decoded_input = input
+		else:
+			raise ValueError('Input is not Valid Json Dictionary or a Dictionary')
+
 		message = {}
 
 		# #### Get the correct Timestamp #####
-		if 'timestamp' in decoded_json:
-			if isinstance(decoded_json['timestamp'], int):
-				time_real = float(decoded_json['timestamp'])
+		if 'timestamp' in decoded_input:
+			if isinstance(decoded_input['timestamp'], int):
+				time_real = float(decoded_input['timestamp'])
 			else:
-				time_real = time.mktime((dateutil.parser.parse(decoded_json['timestamp'])).timetuple())
+				time_real = time.mktime((dateutil.parser.parse(decoded_input['timestamp'])).timetuple())
 		else:
 			time_real = time.time()
 
@@ -42,58 +56,72 @@ class ALMAEventSender():
 
 		# ### Get the key ####
 
-		if 'key' not in decoded_json:
+		if 'key' not in decoded_input:
 			raise ValueError('Parameter "key" must be in the Input Json')
 		else:
-			message['key'] = decoded_json['key']
+			message['key'] = decoded_input['key']
 
 		# ### Get Environment Information ####
 
-		if 'environment' in decoded_json:
-			message['environment'] = decoded_json['environment']
+		if 'environment' in decoded_input:
+			message['environment'] = decoded_input['environment']
 			environment = True
 		else:
 			environment = False
+
 		# ### Get Release ####
 
-		if 'release' in decoded_json:
-			release = decoded_json['release']
+		if 'release' in decoded_input:
+			release = decoded_input['release']
 			if release == 'required':
 				if environment:
-					ste = decoded_json['environment']
+					ste = decoded_input['environment']
 					message['release'] = self.__getversion(ste, time_real)
 				else:
 					raise ValueError('Environment is required to retrieve the Release Information')
 			else:
-				message['release'] = decoded_json['release']
+				message['release'] = decoded_input['release']
+
+		# ### Get Other Keys ####
+
+		stablished_keys = ['timestamp', 'key', 'environment', 'release']
+
+		for key, value in decoded_input.iteritems():
+			if key not in stablished_keys:
+				message[key] = value
+
 
 		return message
 
 
+	def sendEvent(self, input):
+		message = self.__generate_message(input)
+		self.__send(message)
+
+		return message
+
+
+
 if __name__ == "__main__":
-
-
-	inputjson = '{"release": "required",' \
+	input_json = '{"release": "required",' \
 	            '"timestamp": "2015-02-09T23:23:23",' \
 	            '"value_int": 234234,' \
-				'"key": "event",' \
-				'"environment": "AOS"' \
-	            '}'
+	            '"key": "event",' \
+	            '"environment": "AOS"' \
+				'}'
 
-	inputjson2 = '{"release": "required",' \
-	            '"timestamp": 1423151422,' \
-	            '"value_int": 234234' \
-	            '}'
-	inputjson3 = '{"release": "required",' \
-	            '"value_int": 234234' \
-	            '}'
+	rabbit_config = {'Host'         :   'localhost',
+	                 'User'         :   'alma',
+	                 'Password'     :   'Carl.Sagan',
+	                 'Routing_key'  :   'AlmaEvent',
+	                 'Exchange'     :   'alma_events'}
 
+	ca = ALMAEventSender(rabbit_config)
 
-	ca = ALMAEventSender()
-
-	print(inputjson)
-	print len(inputjson)
-	print ca.sendEvent(inputJson=inputjson)
+	print(input_json)
+	print len(input_json)
+	print ca.sendEvent(input_json)
+	#ca.sender.receive()
 
 
 
