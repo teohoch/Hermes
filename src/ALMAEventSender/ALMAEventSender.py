@@ -24,9 +24,9 @@ class ALMAEventSender():
 		self.sender.send(json.dumps(message))
 		return
 
-	def __getversion(self, ste, timestamp):
+	def __getversion(self, ste, timestamp, architecture=32):
 		url = 'http://sstudent01.osf.alma.cl:800/version/'
-		payload = {'ste': ste, 'time': timestamp}
+		payload = {'ste': ste, 'time': timestamp, 'architecture': architecture}
 		r = requests.post(url=url, data=payload)
 		rj = r.json()
 		return rj['release']
@@ -76,7 +76,8 @@ class ALMAEventSender():
 			if release == 'required':
 				if environment:
 					ste = decoded_input['environment']
-					message['release'] = self.__getversion(ste, time_real)
+					architecture = decoded_input['architecture']
+					message['release'] = self.__getversion(ste, time_real, architecture)
 				else:
 					raise ValueError('Environment is required to retrieve the Release Information')
 			else:
@@ -104,9 +105,8 @@ class ALMAEventSender():
 
 if __name__ == "__main__":
 	input_json = '{"release": "required",' \
-	            '"timestamp": "2015-02-09T23:23:23",' \
 	            '"value_int": 234234,' \
-	            '"key": "event",' \
+	            '"key": "ERROR",' \
 	            '"environment": "AOS"' \
 				'}'
 
