@@ -206,6 +206,7 @@ class VersionDatabase(Database):
 
 			antennas = {}
 			rtemp = r.split('=>')[2].split(':\n')[1]
+			print rtemp
 			if ' -> ' in rtemp:
 				rtemp = rtemp.replace('\n', ' ').split(' | ')
 				for entry in rtemp:
@@ -213,10 +214,10 @@ class VersionDatabase(Database):
 						k = entry.split(' -> ')
 						antennas[k[0]] = k[1]
 			elif ' in pad ' in rtemp:
-				rtem = rtemp.split('\n')
+				rtemp = rtemp.split('\n')
 				for entry in rtemp:
 					if entry.strip():
-						k = entry.split('  in pad ')
+						k = entry.split(' in pad ')
 						antennas[k[0]] = k[1]
 
 			patches = {}
