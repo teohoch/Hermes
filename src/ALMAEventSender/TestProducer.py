@@ -94,7 +94,7 @@ if __name__ == "__main__":
 
 	a = ALMAEventSender(rabbit_config)
 	for i in range(0,49):
-		print a.sendEvent(generate_message())
-		time.sleep(1)
+		print '['+str(i) +']\t ' + str(a.sendEvent(generate_message()))
+
 
 
