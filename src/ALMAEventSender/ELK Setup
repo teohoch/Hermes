@@ -1,0 +1,71 @@
+This instructions are for Red Hat based OS:
+
+	1.	Install and configure RabbitMQ (Follow this instructions http://www.rabbitmq.com/install-rpm.html)
+		1.1	For this, you must enable the use of the EPEL repository. Then, install Erlang by doing the following
+			command as sudo
+		 	'yum install erlang'
+		1.2 Add the RabbitMQ repository, and install RabbitMQ
+			'rpm --import http://www.rabbitmq.com/rabbitmq-signing-key-public.asc'
+      		'yum install rabbitmq-server-3.4.4-1.noarch.rpm'
+      	1.3	Start the server by doing:
+      		'/sbin/service rabbitmq-server start'
+      		'rabbitmqctl star_app'
+      	1.4 Enable the rabbitmq_management plugin, which will allow you to easily configure the server.
+      		To do this you must execute:
+      			'/usr/lib/rabbitmq/bin/rabbitmq-plugins enable rabbitmq_management'
+      		Then restart RabbitMQ:
+      			'/sbin/service rabbitmq-server restart'
+      			'rabbitmqctl stop_app'
+      			'rabbitmqctl star_app'
+      	1.5 Open a browser and go to 'localhost:15672' with user/pass => guest/guest/
+      		At the bottom of the page, use the 'Import definitions' to Upload the conf file provided in this repository
+      		in 'Hermes/RabbitConfig/rabbit_basic_conf.json'. This will create a basic configuration with a new
+      		administrative user called 'alma' with the default password 'samuraijack'. It will also disable the
+      		administrative rights of guest, so the next time you log in, do it as 'alma'. It will also create a exchange
+      		called 'alma_events', a queue called 'alma_events_queue' with routing_key 'AlmaEven', binding the queue to
+      		the 'alma_events' exchange.
+      		**************************REMEMBER TO CHANGE THE DEFAULT PASSWORD!!*****************************************
+	2.	Install and Configure Logstash:
+		2.1	Add the logstash repository:
+			'rpm --import http://packages.elasticsearch.org/GPG-KEY-elasticsearch'
+			Copy the the file 'logstash.repo' from 'Hermes/Logstash' to '/etc/yum.repos.d/'
+		2.2 Install Logstash:
+			'yum install logstash'
+		2.3 Add configuration files to Logstash. For this copy the files '01-lumberjack-input.conf', '10-syslog.conf'
+			and '30-lumberjack-output.conf' from 'Hermes/Logstash' to '/etc/logstash/conf.d/'
+	3. 	Install ElasticSearch
+		3.1 Download the RMP from their page:
+			'wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.3.noarch.rpm'
+		3.2 Install Elasticsearch:
+			'rmp -iv elasticsearch-1.4.3.noarch.rpm'
+		3.3 Make ElasticSearch autostart and then start it:
+			'/sbin/chkconfig --add elasticsearch'
+			'service elasticsearch start'
+		3.4 Configure ElasticSearch to accept Kibana, by adding the following line at the end of
+			'/etc/elasticsearch/elasticsearch.yml':
+			'http.cors.enabled: true'
+			Then restart the service:
+			'service elasticsearch restart'
+	4.	Install and setup Kibana. For this we will use Apache, which we suppose is installed in the machine
+		4.1	In '/var/www/httml/' create a new directory:
+			'mkdir Kibana' then 'cd Kibana/'
+		4.2	Extract and delete the unnecessary files and folders:
+		 	'tar -zxvf kibana-3.1.2.tar.gz'
+		 	'cp -rf kibana-3.1.2/* .'
+		 	'rm -rf kibana-3.1.2'
+		 	'rm -rf kibana-3.1.2.tar/gz'
+		4.3	Configure Kibana by pointing it to where your elasticsearch server is. To do this, modify the following line in 'config.js':
+			From:
+				'elasticsearch: "http://"+window.location.hostname+":9200",'
+			To:
+				'elasticsearch: "<URL of your ElasticSearch Server>
+		4.4 Configure apache to serve Kibana. To do this, copy the Apache config file 'Kibana-Apache.conf' from
+			'Hermes/Kibana/' to '/etc/httpd/conf.d/'. Then restart Apache with:
+			'service httpd restart'
+
+	Congratulations! You should now have an ELK stack configured on your server!
+
+
+
+
+

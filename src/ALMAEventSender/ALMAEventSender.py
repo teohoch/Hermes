@@ -106,6 +106,7 @@ class ALMAEventSender():
 if __name__ == "__main__":
 	input_json = '{"release": "required",' \
 	            '"value_int": 234234,' \
+	            '"architecture": 64,' \
 	            '"key": "ERROR",' \
 	            '"environment": "AOS"' \
 				'}'
