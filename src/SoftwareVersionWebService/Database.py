@@ -3,6 +3,7 @@ __author__ = 'teohoch'
 import MySQLdb as mySql
 import time
 from datetime import datetime
+import dateutil.parser
 
 
 class Database():
@@ -98,16 +99,22 @@ class Database():
 class VersionDatabase(Database):
 
 	def __compose(self, ste, timestamp, arch):
-		timestamp = datetime.fromtimestamp(float(timestamp))
+		if isinstance(timestamp, int) or isinstance(timestamp, float):
+			time_real = float(timestamp)
+		else:
+			time_real = dateutil.parser.parse(timestamp)
+			time_real = time.mktime(time_real.timetuple())
+
+		timestamp = datetime.fromtimestamp(float(time_real))
 		if ste.lower() == 'aos':
 			arch_statement = 'AND version LIKE "%{0}%"'.format(('(x86)' if not arch else ('(x86)' if arch==32 else '(x86_64)')))
 		else:
 			arch_statement = ''
 
-		return "SELECT version  FROM status WHERE ste = '{0}' AND date <= '{1}' AND version LIKE '%=> Using ACS%' {2} ORDER BY date DESC LIMIT 1;".format(ste, timestamp,arch_statement)
+		return "SELECT version  FROM status WHERE ste = '{0}' AND date <= '{1}' AND version LIKE '%=> Using ACS%' {2} ORDER BY date DESC LIMIT 1;".format(ste, timestamp,arch_statement), time_real
 
 	def getAcsVersion(self, ste, timestamp=(time.time()), arch=None):
-		sentence = self.__compose(ste,timestamp, arch)
+		sentence, timestamp  = self.__compose(ste,timestamp, arch)
 		r = self.executeReadSQL(sentence)
 
 		if r:
@@ -117,7 +124,7 @@ class VersionDatabase(Database):
 		return dict(acsversion='', ste=ste,timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
 
 	def getBuild(self, ste, timestamp=(time.time()), arch=None):
-		sentence = self.__compose(ste,timestamp, arch)
+		sentence, timestamp  = self.__compose(ste,timestamp, arch)
 		r = self.executeReadSQL(sentence)
 		if r:
 			r = r[0][0]
@@ -127,7 +134,7 @@ class VersionDatabase(Database):
 		return dict(build='', ste=ste,timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
 
 	def getRelease(self, ste, timestamp=(time.time()), arch=None):
-		sentence = self.__compose(ste,timestamp, arch)
+		sentence, timestamp  = self.__compose(ste,timestamp, arch)
 		r = self.executeReadSQL(sentence)
 
 		if r:
@@ -148,7 +155,7 @@ class VersionDatabase(Database):
 		:return: A dictionary with 2 keys: number -> the number of antennas configured. and a dictionary.
 		In this inner dictionary, each configured antenna is a key, and the corresponding value is the configured slot
 		"""
-		sentence = self.__compose(ste,timestamp, arch)
+		sentence, timestamp  = self.__compose(ste,timestamp, arch)
 		r = self.executeReadSQL(sentence)
 
 		if r:
@@ -183,7 +190,7 @@ class VersionDatabase(Database):
 		:return: A dictionary with 2 keys: number -> the number of the number of patches applied. and a dictionary.
 		In this inner dictionary, each Patch name is a key, and the corresponding value is the associated comments
 		"""
-		sentence = self.__compose(ste,timestamp, arch)
+		sentence, timestamp  = self.__compose(ste,timestamp, arch)
 		r = self.executeReadSQL(sentence)
 
 		if r:
@@ -201,7 +208,7 @@ class VersionDatabase(Database):
 		return dict(number=-1, patches=dict(), ste=ste, timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
 
 	def getComplete(self, ste, timestamp=(time.time()), arch=None):
-		sentence = self.__compose(ste,timestamp, arch)
+		sentence, timestamp = self.__compose(ste,timestamp, arch)
 		r = self.executeReadSQL(sentence)
 		if r:
 			r = r[0][0]

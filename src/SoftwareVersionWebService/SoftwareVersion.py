@@ -18,14 +18,16 @@ password = 'YqGHWLuUvWpM8zxB'
 db = VersionDatabase(host,dbname,user,password)
 
 def __recoverinfo():
-	ste = request.form['ste']
-	if 'timestamp' in request.form:
-		timestamp = request.form['timestamp']
+	data = request.get_json()
+	ste = data['ste']
+
+	if 'timestamp' in data:
+		timestamp = data['timestamp']
 	else:
 		timestamp = time.time()
 
-	if 'architecture' in request.form:
-		arch = request.form['architecture']
+	if 'architecture' in data:
+		arch = data['architecture']
 	else:
 		arch = None
 	return [ste,timestamp, arch]
