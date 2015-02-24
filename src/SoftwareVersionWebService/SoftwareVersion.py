@@ -8,7 +8,9 @@ from Database import VersionDatabase
 
 app = Flask(__name__)
 app.debug = False
-host = 'aivwiki.alma.cl'
+#host = 'aivwiki.alma.cl'
+host = 'localhost'
+
 dbname = 'aiv_ste_version'
 user = 'queryuser'
 password = 'YqGHWLuUvWpM8zxB'

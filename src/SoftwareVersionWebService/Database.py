@@ -114,7 +114,7 @@ class VersionDatabase(Database):
 			r = r[0][0]
 			r = r.split('\n')[1].split(' : ')[1]
 			return dict(acsversion=r, ste=ste,timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
-		return {}
+		return dict(acsversion='', ste=ste,timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
 
 	def getBuild(self, ste, timestamp=(time.time()), arch=None):
 		sentence = self.__compose(ste,timestamp, arch)
@@ -124,7 +124,7 @@ class VersionDatabase(Database):
 			r = r.split('\n')[2].split(' : ')[1]
 			return dict(build=r, ste=ste,timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
 
-		return {}
+		return dict(build='', ste=ste,timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
 
 	def getRelease(self, ste, timestamp=(time.time()), arch=None):
 		sentence = self.__compose(ste,timestamp, arch)
@@ -138,7 +138,7 @@ class VersionDatabase(Database):
 				r = r[0]+'-B'
 			return dict(release=r, ste=ste,timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
 
-		return {}
+		return dict(release='', ste=ste,timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
 
 	def getAntennas(self, ste, timestamp=(time.time()), arch=None):
 		"""
@@ -153,17 +153,26 @@ class VersionDatabase(Database):
 
 		if r:
 			r = r[0][0]
-			r = r.split('=>')[2].split(':\n')[1].replace('\n', ' ').split(' | ')
+			antennas = {}
+			if 'Configured Antennas' in r.split('=>')[2]:
+				rtemp = r.split('=>')[2].split(':\n')[1]
+				if ' -> ' in rtemp:
+					rtemp = rtemp.replace('\n', ' ').split(' | ')
+					for entry in rtemp:
+						if entry.strip():
+							k = entry.split(' -> ')
+							antennas[k[0]] = k[1]
+				elif ' in pad ' in rtemp:
+					rtemp = rtemp.split('\n')
+					for entry in rtemp:
+						if entry.strip():
+							k = entry.split(' in pad ')
+							antennas[k[0]] = k[1]
 
-			r2 = {}
-
-			for entry in r:
-				if entry.strip():
-					k = entry.split(' -> ')
-					r2[k[0]] = k[1]
-
-			return dict(number=len(r2), antennas=r2, ste=ste, timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
-		return {}
+				return dict(number=len(antennas), antennas=antennas, ste=ste, timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
+			else:
+				return dict(number=-2, antennas=dict(), ste=ste, timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
+		return dict(number=-1, antennas=dict(), ste=ste, timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
 
 
 	def getPatches(self, ste, timestamp=(time.time()), arch=None):
@@ -185,11 +194,11 @@ class VersionDatabase(Database):
 
 			for entry in r:
 				if 'Patch' in entry:
-					k = entry.split('\n')
-					r2[k[0].split('Patch: ')[1]] = k[1].split('Responsible: ')[1]
-
+					k = entry.split('\n', 1)
+					patch_name = k[0].split('Patch: ')[1]
+					r2[patch_name] = k[1]
 			return dict(number=len(r2), patches=r2, ste=ste, timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
-		return ''
+		return dict(number=-1, patches=dict(), ste=ste, timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
 
 	def getComplete(self, ste, timestamp=(time.time()), arch=None):
 		sentence = self.__compose(ste,timestamp, arch)
@@ -203,41 +212,19 @@ class VersionDatabase(Database):
 				release = release[0]+'-B'
 
 			build = r.split('\n')[2].split(' : ')[1]
-
-			antennas = {}
-			rtemp = r.split('=>')[2].split(':\n')[1]
-			print rtemp
-			if ' -> ' in rtemp:
-				rtemp = rtemp.replace('\n', ' ').split(' | ')
-				for entry in rtemp:
-					if entry.strip():
-						k = entry.split(' -> ')
-						antennas[k[0]] = k[1]
-			elif ' in pad ' in rtemp:
-				rtemp = rtemp.split('\n')
-				for entry in rtemp:
-					if entry.strip():
-						k = entry.split(' in pad ')
-						antennas[k[0]] = k[1]
-
-			patches = {}
-			rtemp = r.split('=>')
-			for entry in rtemp:
-				if 'Patch' in entry:
-					k = entry.split('\n')
-					patches[k[0].split('Patch: ')[1]] = k[1].split('Responsible: ')[1]
-
 			environment = r
 
 			return dict(release=release, build=build, environment=environment, ste=ste,
 				timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
-		return {}
+		return dict(release='', build='', environment='', ste=ste,
+				timestamp=datetime.fromtimestamp(float(timestamp)).strftime("%Y-%m-%d %H:%M:%S"))
 
 
 if __name__ == "__main__":
 	import json
 
-	host = 'aivwiki.alma.cl'
+	#host = 'aivwiki.alma.cl'
+	host = 'localhost'
 	dbname = 'aiv_ste_version'
 	user = 'queryuser'
 	password = 'YqGHWLuUvWpM8zxB'
