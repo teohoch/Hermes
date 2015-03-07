@@ -7,6 +7,7 @@ import requests
 import dateutil.parser
 from RabbitConnection import RabbitConnection
 
+headers = {'Content-Type': 'application/json'}
 
 
 class ALMAEventSender():
@@ -27,7 +28,7 @@ class ALMAEventSender():
 	def __getversion(self, ste, timestamp, architecture=32):
 		url = 'http://sstudent01.osf.alma.cl:800/version/'
 		payload = {'ste': ste, 'time': timestamp, 'architecture': architecture}
-		r = requests.post(url=url, data=payload)
+		r = requests.post(url=url, data=json.dumps(payload))
 		rj = r.json()
 		return rj['release']
 

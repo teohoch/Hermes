@@ -34,18 +34,16 @@ This instructions are for Red Hat based OS:
 		2.3 Add configuration files to Logstash. For this copy the files '01-lumberjack-input.conf', '10-syslog.conf'
 			and '30-lumberjack-output.conf' from 'Hermes/Logstash' to '/etc/logstash/conf.d/'
 	3. 	Install ElasticSearch
-		3.1 Download the RMP from their page:
-			'wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.3.noarch.rpm'
-		3.2 Install Elasticsearch:
-			'rmp -iv elasticsearch-1.4.3.noarch.rpm'
-		3.3 Make ElasticSearch autostart and then start it:
-			'/sbin/chkconfig --add elasticsearch'
+		3.1 Download and install the Public Signing Key for the Elasticsearch Repository
+			'rpm --import https://packages.elasticsearch.org/GPG-KEY-elasticsearch'
+		3.2 Copy the file 'Hermes/Elasticsearch/elasticsearch.repo' to the '/etc/yum.repos.d/' directory
+		3.3 Update yum, and install elasticsearch:
+			'yum update'
+			'yum install elasticsearch'
+		3.4 Set elasticsearch to autostart at boot by doing:
+			'chkconfig --add elasticsearch'
+		3.5 Start elasticsearch:
 			'service elasticsearch start'
-		3.4 Configure ElasticSearch to accept Kibana, by adding the following line at the end of
-			'/etc/elasticsearch/elasticsearch.yml':
-			'http.cors.enabled: true'
-			Then restart the service:
-			'service elasticsearch restart'
 	4.	Install and setup Kibana3. For this we will use Apache, which we suppose is installed in the machine
 		4.1	In '/var/www/httml/' create a new directory:
 			'mkdir Kibana' then 'cd Kibana/'
@@ -70,16 +68,18 @@ This instructions are for Red Hat based OS:
 			or the 64 bit version:
 			'wget https://download.elasticsearch.org/kibana/kibana/kibana-4.0.0-linux-x64.tar.gz'
 		4.3	Extract and delete the unnecessary files and folders:
-		 	'tar -zxvf kibana-4.0.0-linux-x**.tar.gz'
-		 	'cp -rf kibana-4.0.0/* .'
-		 	'rm -rf kibana-4.0.0'
-		 	'rm -rf kibana-4.0.0-linux-x**.tar.gz'
+		 	'tar -zxf kibana-4.0.0-linux-x**.tar.gz'
+		 	'cp -rf kibana-4.0.0-linux-x**/* .'
+		 	'rm -rf kibana-4.0.0-linux-x**'
 		4.4	Configure Kibana by pointing it to where your elasticsearch server is. To do this, modify the following line
 		 	in 'Kibana/config/kibana.yml':
 			From:
 				'elasticsearch: "http://"+window.location.hostname+":9200",'
 			To:
 				'elasticsearch: "<URL of your ElasticSearch Server>
+		4.5 You can also configure the port at which Kibana will bind by modifying the line
+				'Port: 5601'
+			to the port of your choosing.
 		4.5	Copy the file 'Hermes/Kibana/Kibana' to '/etc/init.d/' Thi will allow the use of Kibana as a linux Service:
 			'cp Hermes/Kibaba/Kibana /etc/init.d/'
 			if you followed points 4.2,4.2 and 4.4 to the letter, the configuration should work as it is.

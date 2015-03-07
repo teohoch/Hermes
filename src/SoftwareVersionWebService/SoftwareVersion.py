@@ -8,8 +8,8 @@ from Database import VersionDatabase
 
 app = Flask(__name__)
 app.debug = False
-#host = 'aivwiki.alma.cl'
-host = 'localhost'
+host = 'aivwiki.alma.cl'
+#host = 'localhost'
 
 dbname = 'aiv_ste_version'
 user = 'queryuser'
